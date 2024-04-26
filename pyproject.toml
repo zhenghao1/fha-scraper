@@ -1,0 +1,14 @@
+[tool.poetry]
+name = "fha-scraper"
+version = "0.1.0"
+description = "This scraper scrapes all the exhibition attendees and exhibitor information from the FHA 2024 Singapore website."
+authors = ["Mark Huang <zhenghao1@me.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
