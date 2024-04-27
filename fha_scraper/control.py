@@ -11,6 +11,7 @@ from selenium.webdriver.support.ui import Select
 from selenium.common.exceptions import TimeoutException
 import os
 import time
+import re
 
 import tenacity
 
@@ -176,11 +177,25 @@ def search_contries():
         if(has_data()):
             infinite_scroll()
             attendee_html = get_attendee_list_html()
-            csv_filename = f'{SAVED_FILES_PATH}/{current_country.upper()}.csv'
+            csv_filename = get_csv_filename(current_country)
             generate_country_csv(attendee_html, csv_filename)
             # Do something to get the dom tree
         i += 1
         previous = current
+
+def get_csv_filename(country: str) -> str:
+    """
+    Returns the filename for the given country.
+
+    Args:
+        country (str): The name of the country.
+
+    Returns:
+        str: The filename for the given country.
+    """
+    clean_country_name = re.sub(r'\s', '_', country)
+    final_country_name = clean_country_name.upper()
+    return f'{SAVED_FILES_PATH}/{final_country_name}.csv'
 
 def click_country(element: WebElement) -> None:
     """
