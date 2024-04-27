@@ -72,10 +72,13 @@ def generate_country_csv(html: str, output_filename: str):
         title_element = first_div.select_one(":nth-child(2)")
         company_element = first_div.select_one(":nth-child(3)")
         logging.debug("Processing, name:  %s", name_element.text)
-        clean = lambda name: name.strip().encode('ascii', 'ignore').decode().capitalize()
+        if re.search(u'[\u4e00-\u9fff]', name_element.text):
+            attendee_name = name_element.text
+        else:
+            attendee_name = remove_unicode(name_element.text)
         visitors.append(
             [
-                clean(name_element.text),
+                attendee_name,
                 remove_non_ascii(title_element.text.strip()),
                 company_element.text.strip(),
             ]
@@ -83,3 +86,15 @@ def generate_country_csv(html: str, output_filename: str):
     logging.info("Processing of visitors completed!")
     df = pd.DataFrame(visitors, columns=["Name", "Title", "Company"])
     df.to_csv(output_filename, index=False)
+
+def remove_unicode(name: str) -> str:
+    """
+    Removes unicode characters from the given name, encodes it in ASCII, and capitalizes the result.
+
+    Args:
+        name (str): The name to remove unicode characters from.
+
+    Returns:
+        str: The modified name with unicode characters removed and capitalized.
+    """
+    return name.strip().encode('ascii', 'ignore').decode().capitalize()
